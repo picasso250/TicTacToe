@@ -185,15 +185,9 @@ struct TicTacToe {
 	void walk_empty(function<void(int,int)> callback)
 	{
 		for (int i = 0; i < SIZE; ++i)
-		{
 			for (int j = 0; j < SIZE; ++j)
-			{
 				if (cb[i][j] == ' ')
-				{
 					callback(i,j);
-				}
-			}
-		}
 	}
 	bool isCurPlayer(char p)
 	{
