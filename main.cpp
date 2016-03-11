@@ -1,3 +1,4 @@
+#include <tuple>
 #include <iostream>
 #include <cstdio>
 #include <cctype>
@@ -16,7 +17,16 @@ int main(int argc, char const *argv[])
 		printf("It is %c's turn\n", p);
 		if (p == 'O')
 		{
-			/* code */
+			int x,y;
+			std::tie (x, y) = ttt.getAI_MoveO();
+			// printf("AI move %d, %d\n", x, y);
+			if (x == -1)
+			{
+				cout << "I lose." << endl;
+				return -1;
+			}
+			ttt.play(x, y, 'O');
+			continue;
 		}
 		cin.getline(str, 25);
 		char col = toupper(str[0]);

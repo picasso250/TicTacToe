@@ -1,5 +1,7 @@
+#include <tuple>
 #include <iostream>
 #include <cstdio>
+#include <cassert>
 
 using namespace std;
 
@@ -142,6 +144,10 @@ struct TicTacToe {
 	{
 		return isPlayerNotFail('X');
 	}
+	bool isONotFail() // true => 不败节点 false => 必败节点
+	{
+		return isPlayerNotFail('O');
+	}
 	bool isPlayerNotFail(char p) // true => 不败节点 false => 必败节点
 	{
 		char op = p == 'X' ? 'O' : 'X';
@@ -149,9 +155,9 @@ struct TicTacToe {
 		{
 			return !(whoWins() == op);
 		}
+		int _x = x, _y = y;
 		if (isCurPlayer(op))
 		{
-			int _x = x, _y = y;
 			for (int i = 0; i < SIZE; ++i)
 			{
 				for (int j = 0; j < SIZE; ++j)
@@ -159,7 +165,7 @@ struct TicTacToe {
 					if (cb[i][j] == ' ')
 					{
 						play(i, j, p);
-						if (isXNotFail()) {
+						if (isPlayerNotFail(p)) {
 							play(i, j, ' ');
 							x = _x; y = _y;
 							return true;
@@ -171,28 +177,25 @@ struct TicTacToe {
 			x = _x; y = _y;
 			return false;
 		}
-		if (isCurPlayer(p))
+		assert(isCurPlayer(p));
+		for (int i = 0; i < SIZE; ++i)
 		{
-			int _x = x, _y = y;
-			for (int i = 0; i < SIZE; ++i)
+			for (int j = 0; j < SIZE; ++j)
 			{
-				for (int j = 0; j < SIZE; ++j)
+				if (cb[i][j] == ' ')
 				{
-					if (cb[i][j] == ' ')
-					{
-						play(i, j, op);
-						if (!isXNotFail()) {
-							play(i, j, ' ');
-							x = _x; y = _y;
-							return false;
-						}
+					play(i, j, op);
+					if (!isPlayerNotFail(p)) {
 						play(i, j, ' ');
+						x = _x; y = _y;
+						return false;
 					}
+					play(i, j, ' ');
 				}
 			}
-			x = _x; y = _y;
-			return true;
 		}
+		x = _x; y = _y;
+		return true;
 	}
 	bool isCurPlayer(char p)
 	{
@@ -200,5 +203,27 @@ struct TicTacToe {
 			return p == 'O';
 		}
 		return (cb[x][y] == p);
+	}
+	tuple<int,int> getAI_MoveO()
+	{
+		int _x = x, _y = y;
+		for (int i = 0; i < SIZE; ++i)
+		{
+			for (int j = 0; j < SIZE; ++j)
+			{
+				if (cb[i][j] == ' ')
+				{
+					play(i, j, 'O');
+					if (isONotFail()) {
+						play(i, j, ' ');
+						x = _x; y = _y;
+						return make_tuple (i, j);
+					}
+					play(i, j, ' ');
+				}
+			}
+		}
+		x = _x; y = _y;
+		return make_tuple (-1, -1);
 	}
 };
