@@ -51,27 +51,17 @@ struct TicTacToe {
 	{
 		cout<<"  ";
 		for (int i = 0; i < SIZE; ++i)
-		{
 			printf("%c ", i+'A');
-		}
 		cout<<endl;
 	}
 	bool isGameOver()
 	{
 		if (whoWins() != '-')
-		{
 			return true;
-		}
 		for (int i = 0; i < SIZE; ++i)
-		{
 			for (int j = 0; j < SIZE; ++j)
-			{
 				if (cb[i][j] == ' ')
-				{
 					return false;
-				}
-			}
-		}
 		return true;
 	}
 	// return X|O|-
@@ -79,50 +69,29 @@ struct TicTacToe {
 	char whoWins()
 	{
 		char c = isRow();
-		if (c != '-') {
-			return c;
-		}
+		if (c != '-') return c;
 		c = isCol();
-		if (c != '-') {
-			return c;
-		}
+		if (c != '-') return c;
 		return isX();
 	}
 	char isRow() {
 		for (int i = 0; i < SIZE; ++i)
-		{
 			if (cb[i][0] != ' ' && cb[i][0] == cb[i][1] && cb[i][1] == cb[i][2])
-			{
 				return cb[i][0];
-			}
-		}
-		// cout<<"will return - row"<<endl;
 		return '-';
 	}
 	char isCol() {
 		for (int j = 0; j < SIZE; ++j)
-		{
 			if (cb[0][j] != ' ' && cb[0][j] == cb[1][j] && cb[1][j] == cb[2][j])
-			{
 				return cb[0][j];
-			}
-		}
-		// cout<<"will return - col"<<endl;
 		return '-';
 	}
 	char isX() {
-		if (cb[1][1] == ' ')
-		{
-			return '-';
-		}
+		if (cb[1][1] == ' ') return '-';
 		if (cb[0][0] == cb[1][1] && cb[1][1] == cb[2][2])
-		{
 			return cb[0][0];
-		}
 		if (cb[0][2] == cb[1][1] && cb[1][1] == cb[2][0])
-		{
 			return cb[1][1];
-		}
 		return '-';
 	}
 	void play(int x, int y, char p) {
@@ -143,8 +112,7 @@ struct TicTacToe {
 		}
 		int _x = x, _y = y;
 		vector<int> v;
-		if (isCurPlayer(op))
-		{
+		if (isCurPlayer(op)) {
 			walk_empty([&](int i, int j) {
 				play(i, j, p);
 				int val = getNodeValue(p);
@@ -166,9 +134,8 @@ struct TicTacToe {
 			play(i, j, ' ');
 		});
 		x = _x; y = _y;
-		if (any_of(v.begin(), v.end(), [](int i) {return i==-1;})) {
+		if (any_of(v.begin(), v.end(), [](int i) {return i==-1;}))
 			return -1;
-		}
 		return (any_of(v.begin(), v.end(), [](int i) {return i==1;})) ?
 			1 : 0;
 	}
@@ -181,9 +148,8 @@ struct TicTacToe {
 	}
 	bool isCurPlayer(char p)
 	{
-		if (x == -1 && y == -1) {
+		if (x == -1 && y == -1)
 			return p == 'O';
-		}
 		return (cb[x][y] == p);
 	}
 	tuple<int,int> getAI_MoveO()
@@ -201,16 +167,12 @@ struct TicTacToe {
 		for (auto e : vec) {
 			tie(i, j, v) = e;
 			if (v == 1)
-			{
 				return make_tuple(i,j);
-			}
 		}
 		for (auto e : vec) {
 			tie(i, j, v) = e;
 			if (v == 0)
-			{
 				return make_tuple(i,j);
-			}
 		}
 		return make_tuple (-1, -1);
 	}
