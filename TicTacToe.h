@@ -17,6 +17,7 @@ struct TicTacToe {
 	char cb[SIZE][SIZE];
 	short x;
 	short y;
+
 	TicTacToe() : x(-1), y(-1)
 	{
 		for (int i = 0; i < SIZE; ++i)
@@ -145,22 +146,19 @@ struct TicTacToe {
 	int getNodeValue(char p) // true => 不败节点 false => 必败节点
 	{
 		char op = p == 'X' ? 'O' : 'X';
-		if (isGameOver())
-		{
+		if (isGameOver()) {
 			char w = whoWins();
-			if (w == '-')
-			{
-				return 0;
-			}
-			return (w == op) ? -1 : 1;
+			if (w == '-') return 0;
+			return (w == p) ? 1 : -1;
 		}
 		int _x = x, _y = y;
 		vector<int> v;
 		if (isCurPlayer(op))
 		{
-			walk_empty([&](int i, int j){
+			walk_empty([&](int i, int j) {
 				play(i, j, p);
-				v.push_back(getNodeValue(p));
+				int val = getNodeValue(p);
+				v.push_back(val);
 				play(i, j, ' ');
 			});
 			x = _x; y = _y;
@@ -173,15 +171,16 @@ struct TicTacToe {
 		assert(isCurPlayer(p));
 		walk_empty([&](int i, int j){
 			play(i, j, op);
-			v.push_back(getNodeValue(p));
+			int val = getNodeValue(p);
+			v.push_back(val);
 			play(i, j, ' ');
 		});
 		x = _x; y = _y;
-		if (any_of(v.begin(), v.end(), [](int i) {return i==1;})) {
-			return 1;
+		if (any_of(v.begin(), v.end(), [](int i) {return i==-1;})) {
+			return -1;
 		}
-		return (any_of(v.begin(), v.end(), [](int i) {return i==-1;})) ?
-			-1 : 0;
+		return (any_of(v.begin(), v.end(), [](int i) {return i==1;})) ?
+			1 : 0;
 	}
 	void walk_empty(function<void(int,int)> callback)
 	{
@@ -206,23 +205,29 @@ struct TicTacToe {
 	tuple<int,int> getAI_MoveO()
 	{
 		int _x = x, _y = y;
-		for (int i = 0; i < SIZE; ++i)
-		{
-			for (int j = 0; j < SIZE; ++j)
+		vector<tuple<int,int,int>> vec;
+		walk_empty([&](int i, int j){
+			play(i, j, 'O');
+			vec.push_back(make_tuple(i, j, getNodeValue('O')));
+			play(i, j, ' ');
+		});
+		x = _x; y = _y;
+
+		int i, j, v;
+		for (auto e : vec) {
+			tie(i, j, v) = e;
+			if (v == 1)
 			{
-				if (cb[i][j] == ' ')
-				{
-					play(i, j, 'O');
-					if (isONotFail()) {
-						play(i, j, ' ');
-						x = _x; y = _y;
-						return make_tuple (i, j);
-					}
-					play(i, j, ' ');
-				}
+				return make_tuple(i,j);
 			}
 		}
-		x = _x; y = _y;
+		for (auto e : vec) {
+			tie(i, j, v) = e;
+			if (v == 0)
+			{
+				return make_tuple(i,j);
+			}
+		}
 		return make_tuple (-1, -1);
 	}
 };

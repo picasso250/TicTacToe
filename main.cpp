@@ -18,7 +18,7 @@ int main(int argc, char const *argv[])
 		if (p == 'O')
 		{
 			int x,y;
-			std::tie (x, y) = ttt.getAI_MoveO();
+			tie (x, y) = ttt.getAI_MoveO();
 			// printf("AI move %d, %d\n", x, y);
 			if (x == -1)
 			{
@@ -56,9 +56,11 @@ int main(int argc, char const *argv[])
 	char winner = ttt.whoWins();
 	if (winner == '-')
 	{
+		ttt.print();
 		cout << "It's a tie." << endl;
 		return 0;
 	}
-	printf("%c wins!.\n", winner);
+	ttt.print();
+	printf("%c wins!\n", winner);
 	return 0;
 }
