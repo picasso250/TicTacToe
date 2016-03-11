@@ -1,4 +1,6 @@
 #include <tuple>
+#include <algorithm>
+#include <functional>
 #include <iostream>
 #include <cstdio>
 #include <cassert>
@@ -140,62 +142,59 @@ struct TicTacToe {
 	bool checkBoard(int x) {
 		return (x >= 0 && x < SIZE);
 	}
-	bool isXNotFail() // true => 不败节点 false => 必败节点
-	{
-		return isPlayerNotFail('X');
-	}
-	bool isONotFail() // true => 不败节点 false => 必败节点
-	{
-		return isPlayerNotFail('O');
-	}
-	bool isPlayerNotFail(char p) // true => 不败节点 false => 必败节点
+	int getNodeValue(char p) // true => 不败节点 false => 必败节点
 	{
 		char op = p == 'X' ? 'O' : 'X';
 		if (isGameOver())
 		{
-			return !(whoWins() == op);
+			char w = whoWins();
+			if (w == '-')
+			{
+				return 0;
+			}
+			return (w == op) ? -1 : 1;
 		}
 		int _x = x, _y = y;
+		vector<int> v;
 		if (isCurPlayer(op))
 		{
-			for (int i = 0; i < SIZE; ++i)
-			{
-				for (int j = 0; j < SIZE; ++j)
-				{
-					if (cb[i][j] == ' ')
-					{
-						play(i, j, p);
-						if (isPlayerNotFail(p)) {
-							play(i, j, ' ');
-							x = _x; y = _y;
-							return true;
-						}
-						play(i, j, ' ');
-					}
-				}
-			}
+			walk_empty([&](int i, int j){
+				play(i, j, p);
+				v.push_back(getNodeValue(p));
+				play(i, j, ' ');
+			});
 			x = _x; y = _y;
-			return false;
+			if (any_of(v.begin(), v.end(), [](int i) {return i==1;})) {
+				return 1;
+			}
+			return (any_of(v.begin(), v.end(), [](int i) {return i==0;})) ?
+				0 : -1;
 		}
 		assert(isCurPlayer(p));
+		walk_empty([&](int i, int j){
+			play(i, j, op);
+			v.push_back(getNodeValue(p));
+			play(i, j, ' ');
+		});
+		x = _x; y = _y;
+		if (any_of(v.begin(), v.end(), [](int i) {return i==1;})) {
+			return 1;
+		}
+		return (any_of(v.begin(), v.end(), [](int i) {return i==-1;})) ?
+			-1 : 0;
+	}
+	void walk_empty(function<void(int,int)> callback)
+	{
 		for (int i = 0; i < SIZE; ++i)
 		{
 			for (int j = 0; j < SIZE; ++j)
 			{
 				if (cb[i][j] == ' ')
 				{
-					play(i, j, op);
-					if (!isPlayerNotFail(p)) {
-						play(i, j, ' ');
-						x = _x; y = _y;
-						return false;
-					}
-					play(i, j, ' ');
+					callback(i,j);
 				}
 			}
 		}
-		x = _x; y = _y;
-		return true;
 	}
 	bool isCurPlayer(char p)
 	{

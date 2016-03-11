@@ -76,16 +76,37 @@ int testXNotFail()
 	ttt.play(0,1, 'X');
 	ttt.play(0,2, 'X');
 	// cout<<ttt.isXNotFail()<<endl;
-	assert(ttt.isXNotFail() == true);
+	assert(ttt.getNodeValue('X') == 1);
+	assert(ttt.getNodeValue('O') == -1);
 	ttt.play(0,1, ' ');
 	ttt.play(1,1, 'O');
-	assert(ttt.isXNotFail() == true);
-	ttt.play(2,2, 'X');
-	assert(ttt.isXNotFail() == true);
-	ttt.play(1,2, 'X');
+	assert(ttt.getNodeValue('X') == 1);
+	ttt.play(2,2, 'X'); // 构成绝杀
+	assert(ttt.getNodeValue('X') == 1);
+	ttt.play(1,2, 'X'); // 还差一步赢棋
 	ttt.print();
-	assert(ttt.isXNotFail() == true);
+	assert(ttt.getNodeValue('X') == 1);
+	ttt.play(1,2, 'O');
+	ttt.print();
 	cout<<"========="<<endl;
+	cout<<ttt.getNodeValue('X')<<endl;
+	// assert(ttt.getNodeValue('X') == 0);
+	ttt.play(1,0, 'X');
+	ttt.print();
+	cout<<ttt.getNodeValue('X')<<endl;
+	// assert(ttt.getNodeValue('X') == 0);
+	cout<<"========="<<endl;
+	ttt.play(0,1, 'O');
+	ttt.print();
+	cout<<ttt.getNodeValue('X')<<endl;
+	// assert(ttt.getNodeValue('X') == 0);
+	cout<<"========="<<endl;
+	ttt.play(2,1, 'X');
+	ttt.print();
+	cout<<ttt.getNodeValue('X')<<endl;
+	assert(ttt.getNodeValue('X') == 0);
+	cout<<"========="<<endl;
+
 }
 int main(int argc, char const *argv[])
 {
