@@ -21,12 +21,8 @@ struct TicTacToe {
 	TicTacToe() : x(-1), y(-1)
 	{
 		for (int i = 0; i < SIZE; ++i)
-		{
 			for (int j = 0; j < SIZE; ++j)
-			{
 				cb[i][j] = ' ';
-			}
-		}
 	}
 	void print()
 	{
@@ -36,9 +32,7 @@ struct TicTacToe {
 			int j = -1;
 			printf("%d%c", i+1, getBracketChar(i, j));
 			for (j = 0; j < SIZE; ++j)
-			{
 				printf("%c%c", cb[i][j], getBracketChar(i, j));
-			}
 			cout << i+1 << endl;
 		}
 		printColNum();
@@ -48,12 +42,8 @@ struct TicTacToe {
 		char c = ' ';
 		if (i == x)
 		{
-			if (j == y)
-			{
-				return ')';
-			} else if (j+1 == y) {
-				return '(';
-			}
+			if (j == y) return ')';
+			else if (j+1 == y) return '(';
 		}
 		return c;
 	}
