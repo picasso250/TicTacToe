@@ -14,6 +14,10 @@ int main(int argc, char const *argv[])
 		ttt.print();
 		char p = ttt.isCurPlayer('X') ? 'O' : 'X';
 		printf("It is %c's turn\n", p);
+		if (p == 'O')
+		{
+			/* code */
+		}
 		cin.getline(str, 25);
 		char col = toupper(str[0]);
 		char row = str[1];

@@ -140,11 +140,16 @@ struct TicTacToe {
 	}
 	bool isXNotFail() // true => 不败节点 false => 必败节点
 	{
+		return isPlayerNotFail('X');
+	}
+	bool isPlayerNotFail(char p) // true => 不败节点 false => 必败节点
+	{
+		char op = p == 'X' ? 'O' : 'X';
 		if (isGameOver())
 		{
-			return !(whoWins() == 'O');
+			return !(whoWins() == op);
 		}
-		if (isCurPlayer('O'))
+		if (isCurPlayer(op))
 		{
 			int _x = x, _y = y;
 			for (int i = 0; i < SIZE; ++i)
@@ -153,7 +158,7 @@ struct TicTacToe {
 				{
 					if (cb[i][j] == ' ')
 					{
-						play(i, j, 'X');
+						play(i, j, p);
 						if (isXNotFail()) {
 							play(i, j, ' ');
 							x = _x; y = _y;
@@ -166,7 +171,7 @@ struct TicTacToe {
 			x = _x; y = _y;
 			return false;
 		}
-		if (isCurPlayer('X'))
+		if (isCurPlayer(p))
 		{
 			int _x = x, _y = y;
 			for (int i = 0; i < SIZE; ++i)
@@ -175,7 +180,7 @@ struct TicTacToe {
 				{
 					if (cb[i][j] == ' ')
 					{
-						play(i, j, 'O');
+						play(i, j, op);
 						if (!isXNotFail()) {
 							play(i, j, ' ');
 							x = _x; y = _y;
