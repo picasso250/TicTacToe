@@ -7,8 +7,8 @@
 
 using namespace std;
 
+template <int SIZE = 3>
 struct TicTacToe {
-	static const int SIZE = 3;
 
 	// 'X' 黑棋
 	// 'O' 白棋
@@ -30,7 +30,7 @@ struct TicTacToe {
 		for (int i = 0; i < SIZE; ++i)
 		{
 			int j = -1;
-			printf("%d%c", i+1, getBracketChar(i, j));
+			printf("%2d%c", i+1, getBracketChar(i, j));
 			for (j = 0; j < SIZE; ++j)
 				printf("%c%c", cb[i][j], getBracketChar(i, j));
 			cout << i+1 << endl;
@@ -49,7 +49,7 @@ struct TicTacToe {
 	}
 	void printColNum()
 	{
-		cout<<"  ";
+		cout<<"   ";
 		for (int i = 0; i < SIZE; ++i)
 			printf("%c ", i+'A');
 		cout<<endl;
