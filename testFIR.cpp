@@ -90,12 +90,47 @@ void testFinish()
 {
 	// since we test it on TicTacToe
 }
+void test_in_board()
+{
+	FIR g;
+	assert(g.in_board(1) == true);
+	assert(g.in_board(0) == true);
+	assert(g.in_board(12) == true);
+	assert(g.in_board(-1) == false);
+	assert(g.in_board(13) == false);
+	assert(g.in_board(-333) == false);
+	assert(g.in_board(133333) == false);
+
+	assert(g.in_board(1) == true);
+	assert(g.in_board(2) == true);
+	assert(g.in_board(3) == true);
+}
+void test_too_far_from_all()
+{
+	FIR g;
+	// \ mid
+	g.play(1,1,'O');
+	g.play(2,2,'O');
+	g.play(3,3,'O');
+	g.play(4,4,'O');
+	g.play(5,5,'O');
+	// g.print();
+	assert(g.too_far_from_all(10,10) == true);
+	assert(g.too_far_from_all(1,2) == false);
+	assert(g.too_far_from_all(1,3) == false);
+	assert(g.too_far_from_all(1,4) == false);
+	assert(g.too_far_from_all(1,5) == false);
+	assert(g.too_far_from_all(1,6) == true);
+	assert(g.too_far_from_all(1,7) == true);
+}
 int main(int argc, char const *argv[])
 {
 	testRow();
 	testCol();
 	testX();
 	testFinish();
-	cout<<"4 cases PASSED."<<endl;
+	test_in_board();
+	test_too_far_from_all();
+	cout<<"6 cases PASSED."<<endl;
 	return 0;
 }

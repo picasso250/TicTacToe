@@ -8,7 +8,7 @@
 using namespace std;
 
 template <int SIZE = 3>
-struct TicTacToe {
+struct TicTacToe_T {
 
 	// 'X' 黑棋
 	// 'O' 白棋
@@ -18,7 +18,7 @@ struct TicTacToe {
 	short x;
 	short y;
 
-	TicTacToe() : x(-1), y(-1)
+	TicTacToe_T() : x(-1), y(-1)
 	{
 		for (int i = 0; i < SIZE; ++i)
 			for (int j = 0; j < SIZE; ++j)
@@ -177,3 +177,4 @@ struct TicTacToe {
 		return make_tuple (-1, -1);
 	}
 };
+typedef TicTacToe_T<3> TicTacToe;

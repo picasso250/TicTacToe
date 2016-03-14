@@ -10,7 +10,7 @@
 using namespace std;
 
 template <int SIZE = 13>
-struct FIR_T : TicTacToe<SIZE>
+struct FIR_T : TicTacToe_T<SIZE>
 {
 	const static int MAX_LEVEL = 12;
 
@@ -159,6 +159,7 @@ struct FIR_T : TicTacToe<SIZE>
 	// 	}
 	// 	return true;
 	// }
+	// 返回胜利/失败的概率
 	double getNodeValue(char p, int level = 0) // [-1,1]
 	{
 		char op = p == 'X' ? 'O' : 'X';
@@ -192,8 +193,16 @@ struct FIR_T : TicTacToe<SIZE>
 	bool too_far_from_all(int i, int j) {
 		for (int ii = -2; ii <= 2; ++ii)
 		{
-			for (int jj = -2; jj < 2; ++jj)
+			if (!in_board(i+ii))
 			{
+				continue;
+			}
+			for (int jj = -2; jj < 2 && in_board(j+jj); ++jj)
+			{
+				if (!in_board(j+jj))
+				{
+					continue;
+				}
 				if (this->cb[i+ii][j+jj] != ' ')
 				{
 					return false;
@@ -201,6 +210,10 @@ struct FIR_T : TicTacToe<SIZE>
 			}
 		}
 		return true;
+	}
+	bool in_board(int i)
+	{
+		return 0 <= i && i < SIZE;
 	}
 };
 typedef FIR_T<13> FIR;
