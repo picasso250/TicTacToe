@@ -105,7 +105,7 @@ void test_in_board()
 	assert(g.in_board(2) == true);
 	assert(g.in_board(3) == true);
 }
-void test_too_far_from_all()
+void test_in_battle_field()
 {
 	FIR g;
 	// \ mid
@@ -115,13 +115,25 @@ void test_too_far_from_all()
 	g.play(4,4,'O');
 	g.play(5,5,'O');
 	// g.print();
-	assert(g.too_far_from_all(10,10) == true);
-	assert(g.too_far_from_all(1,2) == false);
-	assert(g.too_far_from_all(1,3) == false);
-	assert(g.too_far_from_all(1,4) == false);
-	assert(g.too_far_from_all(1,5) == false);
-	assert(g.too_far_from_all(1,6) == true);
-	assert(g.too_far_from_all(1,7) == true);
+	assert(g.in_battle_field(10,10) == false);
+	assert(g.in_battle_field(1,2) == true);
+	assert(g.in_battle_field(1,3) == true);
+	assert(g.in_battle_field(1,4) == true);
+	assert(g.in_battle_field(1,5) == true);
+	assert(g.in_battle_field(1,6) == false);
+	assert(g.in_battle_field(1,7) == false);
+}
+void testAI_MoveX()
+{
+	FIR g;
+	// \ mid
+	g.AI_MoveX();
+	assert(g.isCurPlayer('X') == true);
+	g.play(6,7,'O');
+	assert(g.isCurPlayer('O') == true);
+	g.AI_MoveX();
+	g.print();
+	assert(g.isCurPlayer('X') == true);
 }
 int main(int argc, char const *argv[])
 {
@@ -130,7 +142,8 @@ int main(int argc, char const *argv[])
 	testX();
 	testFinish();
 	test_in_board();
-	test_too_far_from_all();
+	test_in_battle_field();
+	testAI_MoveX();
 	cout<<"6 cases PASSED."<<endl;
 	return 0;
 }

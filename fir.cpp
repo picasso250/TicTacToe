@@ -16,19 +16,16 @@ int main(int argc, char const *argv[])
 		game.print();
 		char p = game.isCurPlayer('X') ? 'O' : 'X';
 		printf("It is %c's turn\n", p);
-		// if (p == 'O')
-		// {
-		// 	int x,y;
-		// 	tie (x, y) = game.getAI_MoveO();
-		// 	// printf("AI move %d, %d\n", x, y);
-		// 	if (x == -1)
-		// 	{
-		// 		cout << "I lose." << endl;
-		// 		return -1;
-		// 	}
-		// 	game.play(x, y, 'O');
-		// 	continue;
-		// }
+		if (p == 'X')
+		{
+			int x,y;
+			if (!game.AI_MoveX())
+			{
+				cout << "I lose." << endl;
+				return -1;
+			}
+			continue;
+		}
 		cin.getline(str, 25);
 		char col = toupper(str[0]);
 		char row = str[1];
@@ -45,7 +42,7 @@ int main(int argc, char const *argv[])
 			return 1;
 		}
 		int x = atoi(str+1)-1;
-		printf("x=%d\n", x);
+		// printf("x=%d\n", x);
 		if (x < 0 || x > 13)
 		{
 			perror("must be 1-13");

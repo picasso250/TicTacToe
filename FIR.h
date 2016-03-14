@@ -1,4 +1,5 @@
 #include <tuple>
+#include <map>
 #include <algorithm>
 #include <functional>
 #include <iostream>
@@ -12,7 +13,7 @@ using namespace std;
 template <int SIZE = 13>
 struct FIR_T : TicTacToe_T<SIZE>
 {
-	const static int MAX_LEVEL = 12;
+	const static int MAX_LEVEL = 14;
 
 	char isRow() {
 		for (int i = 0; i < SIZE; ++i) {
@@ -175,11 +176,13 @@ struct FIR_T : TicTacToe_T<SIZE>
 		int _x = this->x, _y = this->y;
 		vector<double> v;
 		char next_p = this->isCurPlayer(op)? p : op;
-		walk_empty([&](int i, int j) {
+		this->walk_empty([&](int i, int j) {
 			// 不会离已有的棋子太远 距离2
-			if (too_far_from_all(i, j)) return;
+			if (in_battle_field(i, j)) return;
 			this->play(i, j, next_p);
+			this->print();
 			double val = getNodeValue(p, level+1);
+			printf("level=%d, (%d,%d), %d\n", level, i,j,val);
 			v.push_back(val);
 			this->cb[i][j] = ' ';
 		});
@@ -190,7 +193,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 		    sum_of_elems += val;
 		return sum_of_elems / v.size();
 	}
-	bool too_far_from_all(int i, int j) {
+	bool in_battle_field(int i, int j) {
 		for (int ii = -2; ii <= 2; ++ii)
 		{
 			if (!in_board(i+ii))
@@ -205,15 +208,45 @@ struct FIR_T : TicTacToe_T<SIZE>
 				}
 				if (this->cb[i+ii][j+jj] != ' ')
 				{
-					return false;
+					return true;
 				}
 			}
 		}
-		return true;
+		return false;
 	}
 	bool in_board(int i)
 	{
 		return 0 <= i && i < SIZE;
+	}
+	bool AI_MoveX()
+	{
+		if (this->x == -1)
+		{
+			this->play(6,6,'X');
+			return true;
+		}
+		int _x = this->x, _y = this->y;
+		map<double,tuple<int,int>> m;
+		this->walk_empty([&](int i, int j) {
+			// 不会离已有的棋子太远 距离2
+			if (!in_battle_field(i, j)) {
+				printf("(%d,%d) in_battle_field\n", i,j);
+				return;
+			}
+			this->play(i, j, 'X');
+			m[getNodeValue('X')] = make_tuple(i, j);
+			this->cb[i][j] = ' ';
+		});
+		this->x = _x; this->y = _y;
+		auto maxp = m.rbegin();
+		if (maxp->first < 0)
+		{
+			return false;
+		}
+		int i, j, v;
+		tie(i,j) = maxp->second;
+		this->play(i,j,'X');
+		return true;
 	}
 };
 typedef FIR_T<13> FIR;
