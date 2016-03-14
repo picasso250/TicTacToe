@@ -140,6 +140,43 @@ void test_in_battle_field()
 	assert(g.in_battle_field(1,6) == false);
 	assert(g.in_battle_field(1,7) == false);
 }
+void test_winby()
+{
+	FIR g;
+	// test row
+	g.play(0,0, 'X');
+	g.play(0,1, 'X');
+	g.play(0,2, 'X');
+	g.play(0,3, 'X');
+	assert(g.win_by() == '-');
+	g.play(0,4, 'X');
+	assert(g.win_by() == 'X');
+
+	// test col
+	g.play(1,3,'O');
+	g.play(2,3,'O');
+	g.play(3,3,'O');
+	g.play(4,3,'O');
+	g.play(5,3,'O');
+	assert(g.win_by() == 'O');
+
+	// \ mid
+	g.play(1,1,'O');
+	g.play(2,2,'O');
+	g.play(3,3,'O');
+	g.play(4,4,'O');
+	g.play(5,5,'O');
+	assert(g.win_by() == 'O');
+
+	// / top
+	g.play(1,5,'X');
+	g.play(2,4,'X');
+	g.play(3,3,'X');
+	g.play(4,2,'X');
+	g.play(5,1,'X');
+	g.print();
+	assert(g.win_by() == 'X');
+}
 void testAI_MoveX()
 {
 	FIR g;
@@ -161,7 +198,8 @@ int main(int argc, char const *argv[])
 	test_in_board();
 	test_in_battle_field();
 	testWhoWins();
-	testAI_MoveX();
+	test_winby();
+	// testAI_MoveX();
 	cout<<"8 cases PASSED."<<endl;
 	return 0;
 }

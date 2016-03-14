@@ -13,6 +13,7 @@ using namespace std;
 template <int SIZE = 13>
 struct FIR_T : TicTacToe_T<SIZE>
 {
+	// 4 = 3m29.908s
 	const static int MAX_LEVEL = 4;
 	const static int MAX_BATTLE_RANGE = 2;
 
@@ -168,17 +169,17 @@ struct FIR_T : TicTacToe_T<SIZE>
 	double getNodeValue(char p, int level = 0) // [-1,1]
 	{
 		char op = p == 'X' ? 'O' : 'X';
-		if (this->isGameOver()) {
-			char w = this->whoWins();
-			this->print();
-			printf("%c wins\n", w);
-			if (w == '-') return 0;
-			return (w == p) ? 1 : -1;
-		}
+		// if (this->isGameOver()) {
+		// 	char w = this->whoWins();
+		// 	this->print();
+		// 	printf("%c wins\n", w);
+		// 	if (w == '-') return 0;
+		// 	return (w == p) ? 1 : -1;
+		// }
 		if (level >= MAX_LEVEL)
 		{
 			// printf("level reached\n");
-			return 0.5;
+			return 0.0;
 		}
 		int _x = this->x, _y = this->y;
 		vector<double> v;
@@ -191,14 +192,21 @@ struct FIR_T : TicTacToe_T<SIZE>
 			}
 			this->play(i, j, next_p);
 			// this->print();
-			double val = getNodeValue(p, level+1);
-			// printf("level=%d, (%d,%d), %f, child_i:%dth\n", level, i,j,val,child_i++);
-			if (val > 0.51 || val < -0.51)
+			char winner = win_by();
+			double val;
+			if (winner == '-')
 			{
-				this->print();
-				printf("not 0! %c wins\n", this->whoWins());
-				exit(0);
+				val = getNodeValue(p, level+1);
+			} else {
+				val = winner == p ? 1.0 : -1.0;
 			}
+			// printf("level=%d, (%d,%d), %f, child_i:%dth\n", level, i,j,val,child_i++);
+			// if (val > 0.51 || val < -0.51)
+			// {
+			// 	this->print();
+			// 	printf("not 0! %c wins\n", this->whoWins());
+			// 	exit(0);
+			// }
 			v.push_back(val);
 			this->cb[i][j] = ' ';
 		});
@@ -208,6 +216,69 @@ struct FIR_T : TicTacToe_T<SIZE>
 		for (double val : v)
 		    sum_of_elems += val;
 		return sum_of_elems / v.size();
+	}
+	char win_by()
+	{
+		int i = this->x, j = this->y;
+		char stone = this->cb[i][j];
+		int s = 0;
+		// row
+		for (int jj = max(0, j-5+1); jj < min(SIZE,j+5); ++jj)
+		{
+			if (stone == this->cb[i][jj])
+			{
+				s++;
+				if (s == 5)
+				{
+					return stone;
+				}
+			} else {
+				s = 0;
+			}
+		}
+		// col
+		for (int ii = max(0,i-5+1), s = 0; ii < min(SIZE,i+5); ++ii)
+		{
+			if (stone == this->cb[ii][j])
+			{
+				s++;
+				if (s == 5)
+				{
+					return stone;
+				}
+			} else {
+				s = 0;
+			}
+		}
+		// /,
+		for (int k = max(max(-5, i-SIZE),-j),s=0; k < 5 && k <= i && k < SIZE-j; ++k)
+		{
+			if (stone == this->cb[i-k][j+k])
+			{
+				s++;
+				if (s == 5)
+				{
+					return stone;
+				}
+			} else {
+				s = 0;
+			}
+		}
+		// \,
+		for (int k = max(max(-5, -i),-j),s=0; k < 5 && k < SIZE - i && k < SIZE-j; ++k)
+		{
+			if (stone == this->cb[i+k][j+k])
+			{
+				s++;
+				if (s == 5)
+				{
+					return stone;
+				}
+			} else {
+				s = 0;
+			}
+		}
+		return '-';
 	}
 	bool in_battle_field(int i, int j) {
 		for (int ii = -2; ii <= 2; ++ii)
