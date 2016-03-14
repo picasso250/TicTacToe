@@ -88,6 +88,7 @@ void testX()
 }
 void testFinish()
 {
+	// since we test it on TicTacToe
 }
 int main(int argc, char const *argv[])
 {
