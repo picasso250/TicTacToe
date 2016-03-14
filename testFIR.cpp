@@ -199,7 +199,7 @@ int main(int argc, char const *argv[])
 	test_in_battle_field();
 	testWhoWins();
 	test_winby();
-	// testAI_MoveX();
+	testAI_MoveX();
 	cout<<"8 cases PASSED."<<endl;
 	return 0;
 }

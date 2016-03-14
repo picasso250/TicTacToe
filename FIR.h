@@ -13,7 +13,7 @@ using namespace std;
 template <int SIZE = 13>
 struct FIR_T : TicTacToe_T<SIZE>
 {
-	// 4 = 3m29.908s
+	// 4 = 3m29.908s => 0m49.850s
 	const static int MAX_LEVEL = 4;
 	const static int MAX_BATTLE_RANGE = 2;
 
@@ -191,7 +191,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 				return;
 			}
 			this->play(i, j, next_p);
-			// this->print();
+			this->print();
 			char winner = win_by();
 			double val;
 			if (winner == '-')
