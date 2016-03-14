@@ -10,18 +10,20 @@
 using namespace std;
 
 template <int SIZE = 13>
-struct FIR : public TicTacToe<SIZE>
+struct FIR_T : TicTacToe<SIZE>
 {
+	const static int MAX_LEVEL = 12;
+
 	char isRow() {
 		for (int i = 0; i < SIZE; ++i) {
 			int s[] = {0,0};
 			for (int j = 0; j < SIZE; ++j)
 			{
-				int x = this->cb[i][j] == 'X' ? 1 : 0;
-				if (this->cb[i][j] != ' ')
-				{
+				char stone = this->cb[i][j];
+				int x = stone == 'X' ? 1 : 0;
+				if (stone != ' ') {
 					s[x]++;
-					if (s[x] >= 5) return x ? 'X' : 'O';
+					if (s[x] >= 5) return stone;
 				} else {
 					s[0] = s[1] = 0;
 				}
@@ -35,11 +37,11 @@ struct FIR : public TicTacToe<SIZE>
 			int s[] = {0,0};
 			for (int i = 0; i < SIZE; ++i)
 			{
-				int x = this->cb[i][j] == 'X' ? 1 : 0;
-				if (this->cb[i][j] != ' ')
-				{
+				char stone = this->cb[i][j];
+				int x = stone == 'X' ? 1 : 0;
+				if (stone != ' ') {
 					s[x]++;
-					if (s[x] >= 5) return x ? 'X' : 'O';
+					if (s[x] >= 5) return stone;
 				} else {
 					s[0] = s[1] = 0;
 				}
@@ -49,7 +51,7 @@ struct FIR : public TicTacToe<SIZE>
 	}
 	char isX() {
 		// is /, the left part
-		for (int i = 5-1; i < SIZE; ++i)
+		for (int i = 0; i < SIZE; ++i)
 		{
 			int s[] = {0,0};
 			for (int k = 0; k < SIZE && i+k < SIZE && i-k >= 0; ++k)
@@ -64,8 +66,7 @@ struct FIR : public TicTacToe<SIZE>
 						return stone;
 					}
 				} else {
-					s[0] = 0;
-					s[1] = 0;
+					s[0] = s[1] = 0;
 				}
 			}
 		}
@@ -78,6 +79,7 @@ struct FIR : public TicTacToe<SIZE>
 				char stone = this->cb[k][SIZE-k-1];
 				if (stone != ' ')
 				{
+					int x = stone == 'X' ? 1 : 0;
 					s[x]++;
 					if (s[x] == 5)
 					{
@@ -94,7 +96,7 @@ struct FIR : public TicTacToe<SIZE>
 			{
 				for (int k = 0; k < SIZE && i+k < SIZE; ++k)
 				{
-					char stone = this->cb[k][i+k]
+					char stone = this->cb[k][i+k];
 					if (stone != ' ')
 					{
 						int x = stone == 'X' ? 1 : 0;
@@ -104,34 +106,97 @@ struct FIR : public TicTacToe<SIZE>
 							return stone;
 						}
 					} else {
-						s[0] = 0;
-						s[1] = 0;
+						s[0] = s[1] = 0;
 					}
+				}
+			}
+		}
+		// is \, the left part
+		for (int i = 0; i < SIZE; ++i)
+		{
+			int s[] = {0,0};
+			for (int k = 0; k < SIZE && i+k < SIZE; ++k)
+			{
+				char stone = this->cb[i+k][k];
+				if (stone != ' ')
+				{
+					int x = stone == 'X' ? 1 : 0;
+					s[x]++;
+					if (s[x] == 5)
+					{
+						return stone;
+					}
+				} else {
+					s[0] = s[1] = 0;
 				}
 			}
 		}
 		return '-';
 	}
-	bool is_left_down_5(int i, int j)
+	// bool is_left_down_5(int i, int j)
+	// {
+	// 	char s = this->cb[i][j];
+	// 	for (int k = 1; k < 5 && 0 <= i-k && j+k < SIZE; ++k)
+	// 	{
+	// 		if (this->cb[i-k][j+k] != s) {
+	// 			return false;
+	// 		}
+	// 	}
+	// 	return true;
+	// }
+	// bool is_right_down_5(int i, int j)
+	// {
+	// 	char s = this->cb[i][j];
+	// 	for (int k = 1; k < 5 && i+k < SIZE && j+k < SIZE; ++k)
+	// 	{
+	// 		if (this->cb[i+k][j+k] != s) {
+	// 			return false;
+	// 		}
+	// 	}
+	// 	return true;
+	// }
+	double getNodeValue(char p, int level = 0) // [-1,1]
 	{
-		char s = cb[i][j];
-		for (int k = 1; k < 5 && 0 <= i-k && j+k < SIZE; ++k)
-		{
-			if (cb[i-k][j+k] != s) {
-				return false;
-			}
+		char op = p == 'X' ? 'O' : 'X';
+		if (this->isGameOver()) {
+			char w = this->whoWins();
+			if (w == '-') return 0;
+			return (w == p) ? 1 : -1;
 		}
-		return true;
-	}
-	bool is_right_down_5(int i, int j)
-	{
-		char s = cb[i][j];
-		for (int k = 1; k < 5 && i+k < SIZE && j+k < SIZE; ++k)
+		if (level >= MAX_LEVEL)
 		{
-			if (cb[i+k][j+k] != s) {
-				return false;
+			return 0.5;
+		}
+		int _x = this->x, _y = this->y;
+		vector<double> v;
+		char next_p = this->isCurPlayer(op)? p : op;
+		walk_empty([&](int i, int j) {
+			// 不会离已有的棋子太远 距离2
+			if (too_far_from_all(i, j)) return;
+			this->play(i, j, next_p);
+			double val = getNodeValue(p, level+1);
+			v.push_back(val);
+			this->cb[i][j] = ' ';
+		});
+		this->x = _x; this->y = _y;
+		assert(v.size() != 0);
+		double sum_of_elems = 0.0;
+		for (double val : v)
+		    sum_of_elems += val;
+		return sum_of_elems / v.size();
+	}
+	bool too_far_from_all(int i, int j) {
+		for (int ii = -2; ii <= 2; ++ii)
+		{
+			for (int jj = -2; jj < 2; ++jj)
+			{
+				if (this->cb[i+ii][j+jj] != ' ')
+				{
+					return false;
+				}
 			}
 		}
 		return true;
 	}
 };
+typedef FIR_T<13> FIR;

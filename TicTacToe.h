@@ -68,25 +68,25 @@ struct TicTacToe {
 	// X胜 | O胜 | 平局或者没有结果
 	char whoWins()
 	{
-		char c = isRow();
+		char c = this->isRow();
 		if (c != '-') return c;
-		c = isCol();
+		c = this->isCol();
 		if (c != '-') return c;
-		return isX();
+		return this->isX();
 	}
-	char isRow() {
+	virtual char isRow() {
 		for (int i = 0; i < SIZE; ++i)
 			if (cb[i][0] != ' ' && cb[i][0] == cb[i][1] && cb[i][1] == cb[i][2])
 				return cb[i][0];
 		return '-';
 	}
-	char isCol() {
+	virtual char isCol() {
 		for (int j = 0; j < SIZE; ++j)
 			if (cb[0][j] != ' ' && cb[0][j] == cb[1][j] && cb[1][j] == cb[2][j])
 				return cb[0][j];
 		return '-';
 	}
-	char isX() {
+	virtual char isX() {
 		if (cb[1][1] == ' ') return '-';
 		if (cb[0][0] == cb[1][1] && cb[1][1] == cb[2][2])
 			return cb[0][0];
