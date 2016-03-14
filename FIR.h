@@ -13,7 +13,8 @@ using namespace std;
 template <int SIZE = 13>
 struct FIR_T : TicTacToe_T<SIZE>
 {
-	const static int MAX_LEVEL = 8;
+	const static int MAX_LEVEL = 4;
+	const static int MAX_BATTLE_RANGE = 2;
 
 	char isRow() {
 		for (int i = 0; i < SIZE; ++i) {
@@ -176,12 +177,13 @@ struct FIR_T : TicTacToe_T<SIZE>
 		}
 		if (level >= MAX_LEVEL)
 		{
-			printf("level reached\n");
+			// printf("level reached\n");
 			return 0.5;
 		}
 		int _x = this->x, _y = this->y;
 		vector<double> v;
 		char next_p = this->isCurPlayer(op)? p : op;
+		int child_i = 0;
 		this->walk_empty([&](int i, int j) {
 			// 不会离已有的棋子太远 距离2
 			if (!in_battle_field(i, j)) {
@@ -190,7 +192,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 			this->play(i, j, next_p);
 			// this->print();
 			double val = getNodeValue(p, level+1);
-			printf("level=%d, (%d,%d), %f\n", level, i,j,val);
+			// printf("level=%d, (%d,%d), %f, child_i:%dth\n", level, i,j,val,child_i++);
 			if (val > 0.51 || val < -0.51)
 			{
 				this->print();
