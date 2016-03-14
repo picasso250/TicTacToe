@@ -86,6 +86,23 @@ void testX()
 	g.print();
 	assert(g.whoWins() == 'X');
 }
+void testWhoWins()
+{
+	FIR g;
+	g.play(0,2,'O');
+	g.play(0,3,'X');
+	g.play(0,4,'X');
+	g.play(0,5,'O');
+	g.play(2,4,'O');
+	g.play(2,10,'O');
+	g.play(4,5,'X');
+	g.play(4,8,'X');
+	g.play(6,6,'X');
+	g.play(6,7,'O');
+	g.play(0,12,'X');
+	g.print();
+	assert(g.whoWins() == '-');
+}
 void testFinish()
 {
 	// since we test it on TicTacToe
@@ -143,7 +160,8 @@ int main(int argc, char const *argv[])
 	testFinish();
 	test_in_board();
 	test_in_battle_field();
+	testWhoWins();
 	testAI_MoveX();
-	cout<<"6 cases PASSED."<<endl;
+	cout<<"8 cases PASSED."<<endl;
 	return 0;
 }

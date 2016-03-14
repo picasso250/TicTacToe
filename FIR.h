@@ -13,7 +13,7 @@ using namespace std;
 template <int SIZE = 13>
 struct FIR_T : TicTacToe_T<SIZE>
 {
-	const static int MAX_LEVEL = 14;
+	const static int MAX_LEVEL = 8;
 
 	char isRow() {
 		for (int i = 0; i < SIZE; ++i) {
@@ -42,7 +42,9 @@ struct FIR_T : TicTacToe_T<SIZE>
 				int x = stone == 'X' ? 1 : 0;
 				if (stone != ' ') {
 					s[x]++;
-					if (s[x] >= 5) return stone;
+					if (s[x] >= 5) {
+						return stone;
+					}
 				} else {
 					s[0] = s[1] = 0;
 				}
@@ -65,6 +67,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 					s[x]++;
 					if (s[x] == 5)
 					{
+						// printf("/ left part\n");
 						return stone;
 					}
 				} else {
@@ -87,6 +90,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 					s[x]++;
 					if (s[x] == 5)
 					{
+						// printf("/ right part\n");
 						return stone;
 					}
 				}
@@ -97,22 +101,20 @@ struct FIR_T : TicTacToe_T<SIZE>
 		for (int i = 0; i < SIZE; ++i)
 		{
 			int s[] = {0,0};
-			for (int k = 0; k < SIZE; ++k)
+			for (int k = 0; k < SIZE && i+k < SIZE; ++k)
 			{
-				for (int k = 0; k < SIZE && i+k < SIZE; ++k)
+				char stone = this->cb[k][i+k];
+				if (stone != ' ')
 				{
-					char stone = this->cb[k][i+k];
-					if (stone != ' ')
+					int x = stone == 'X' ? 1 : 0;
+					s[x]++;
+					if (s[x] == 5)
 					{
-						int x = stone == 'X' ? 1 : 0;
-						s[x]++;
-						if (s[x] == 5)
-						{
-							return stone;
-						}
-					} else {
-						s[0] = s[1] = 0;
+						// printf("\\ right\n");
+						return stone;
 					}
+				} else {
+					s[0] = s[1] = 0;
 				}
 			}
 		}
@@ -129,6 +131,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 					s[x]++;
 					if (s[x] == 5)
 					{
+						// printf("\\ left \n");
 						return stone;
 					}
 				} else {
@@ -166,11 +169,14 @@ struct FIR_T : TicTacToe_T<SIZE>
 		char op = p == 'X' ? 'O' : 'X';
 		if (this->isGameOver()) {
 			char w = this->whoWins();
+			this->print();
+			printf("%c wins\n", w);
 			if (w == '-') return 0;
 			return (w == p) ? 1 : -1;
 		}
 		if (level >= MAX_LEVEL)
 		{
+			printf("level reached\n");
 			return 0.5;
 		}
 		int _x = this->x, _y = this->y;
@@ -178,11 +184,19 @@ struct FIR_T : TicTacToe_T<SIZE>
 		char next_p = this->isCurPlayer(op)? p : op;
 		this->walk_empty([&](int i, int j) {
 			// 不会离已有的棋子太远 距离2
-			if (in_battle_field(i, j)) return;
+			if (!in_battle_field(i, j)) {
+				return;
+			}
 			this->play(i, j, next_p);
-			this->print();
+			// this->print();
 			double val = getNodeValue(p, level+1);
-			printf("level=%d, (%d,%d), %d\n", level, i,j,val);
+			printf("level=%d, (%d,%d), %f\n", level, i,j,val);
+			if (val > 0.51 || val < -0.51)
+			{
+				this->print();
+				printf("not 0! %c wins\n", this->whoWins());
+				exit(0);
+			}
 			v.push_back(val);
 			this->cb[i][j] = ' ';
 		});
@@ -229,8 +243,8 @@ struct FIR_T : TicTacToe_T<SIZE>
 		map<double,tuple<int,int>> m;
 		this->walk_empty([&](int i, int j) {
 			// 不会离已有的棋子太远 距离2
+			// printf("(%d,%d) in_battle_field=%d\n", i,j,in_battle_field);
 			if (!in_battle_field(i, j)) {
-				printf("(%d,%d) in_battle_field\n", i,j);
 				return;
 			}
 			this->play(i, j, 'X');
