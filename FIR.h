@@ -54,9 +54,10 @@ struct FIR_T : TicTacToe<SIZE>
 		for (int i = 0; i < SIZE; ++i)
 		{
 			int s[] = {0,0};
-			for (int k = 0; k < SIZE && i+k < SIZE && i-k >= 0; ++k)
+			for (int k = 0; k < SIZE && i-k >= 0; ++k)
 			{
-				char stone = this->cb[i+k][i-k];
+				char stone = this->cb[k][i-k];
+				// printf("(%d,%d) ", k,i-k);
 				if (stone != ' ')
 				{
 					int x = stone == 'X' ? 1 : 0;
@@ -69,14 +70,16 @@ struct FIR_T : TicTacToe<SIZE>
 					s[0] = s[1] = 0;
 				}
 			}
+			// cout<<endl;
 		}
 		// is /, the right part
 		for (int i = 0; i <= SIZE - 5; ++i)
 		{
 			int s[] = {0,0};
-			for (int k = 0; k < SIZE; ++k)
+			for (int k = 0; k < SIZE && i+k < SIZE; ++k)
 			{
-				char stone = this->cb[k][SIZE-k-1];
+				char stone = this->cb[i+k][SIZE-k-1];
+				// printf("(%d,%d) ", i+k,SIZE-k-1);
 				if (stone != ' ')
 				{
 					int x = stone == 'X' ? 1 : 0;
@@ -87,6 +90,7 @@ struct FIR_T : TicTacToe<SIZE>
 					}
 				}
 			}
+			// cout<<endl;
 		}
 		// is \, the right part
 		for (int i = 0; i < SIZE; ++i)

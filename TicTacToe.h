@@ -68,11 +68,11 @@ struct TicTacToe {
 	// X胜 | O胜 | 平局或者没有结果
 	char whoWins()
 	{
-		char c = this->isRow();
+		char c = isRow();
 		if (c != '-') return c;
-		c = this->isCol();
+		c = isCol();
 		if (c != '-') return c;
-		return this->isX();
+		return isX();
 	}
 	virtual char isRow() {
 		for (int i = 0; i < SIZE; ++i)
