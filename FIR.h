@@ -383,7 +383,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 						} else {
 							if (k == 1) {
 								stone = this->cb[x][y];
-								printf("stone chane to %c\n", stone);
+								// printf("stone chane to %c\n", stone);
 								rel[di][i] = 0;
 								sum[di][i] = 1;
 							} else {
@@ -399,11 +399,12 @@ struct FIR_T : TicTacToe_T<SIZE>
 				// printf("sum=%d\n", sum[di][i]);
 			}
 		}
+		// merge, OOO | OX
 		for (int i = 0; i < 4; ++i)
 		{
 			for (int k = 0; k < 2; ++k)
 			{
-				printf("%d,%d,%d\n", rel[k][i], dead[k][i], sum[k][i]);
+				// printf("%d,%d,%d\n", rel[k][i], dead[k][i], sum[k][i]);
 			}
 			if (rel[0][i] == 1 && rel[0][i] == 1
 				&& dead[0][i] == 0 && dead[1][i] == 0)
@@ -412,6 +413,13 @@ struct FIR_T : TicTacToe_T<SIZE>
 				sum[0][i] += sum[1][i] - 1;
 				sum[1][i] = 0;
 				dead[0][i] += dead[1][i];
+			} else if (rel[0][i] ^ rel[1][i]) {
+				int kk = rel[0][i] == 1 ? 0 : 1;
+				dead[kk][i]++;
+			}
+			for (int k = 0; k < 2; ++k)
+			{
+				// printf("after merge %d,%d,%d\n", rel[k][i], dead[k][i], sum[k][i]);
 			}
 		}
 		
