@@ -228,9 +228,25 @@ void test_get_point_value()
 	assert(g.get_point_value() == sum_p({0.3,0.2,0.8,0.25,0.25}));
 	g.play(5,5, 'O');
 	assert(g.get_point_value() == sum_p({0.25,0.2,0.75,0.25,0.25}));
+}
+void test_get_point_relation()
+{
+	FIR g;
+	vector<string> vec;
+	g.play(6,6, 'X');
+	g.play(6,7, 'O');
+	vec = {"#+1","1","+1","+1","+1"};
+	sort(vec.begin(), vec.end());
+	auto res  = g.get_point_relation();
+	sort(res.begin(), res.end());
+	assert(res == vec);
+	
+	g.play(7,7, 'X');
+	// assert(g.get_point_value() == sum_p({0.3,0.2,0.8,0.25,0.25}));
+	g.play(5,5, 'O');
+	// assert(g.get_point_value() == sum_p({0.25,0.2,0.75,0.25,0.25}));
 	// g.play(8,6, 'X');
 	// assert(g.get_point_value() == 0.8);
-
 }
 void testAI_MoveX()
 {
@@ -257,6 +273,7 @@ int main(int argc, char const *argv[])
 	test_line_value();
 	test_merge_env();
 	test_get_point_value();
+	test_get_point_relation();
 	// testAI_MoveX();
 	cout<<"8 cases PASSED."<<endl;
 	return 0;

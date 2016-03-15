@@ -355,7 +355,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 			for (int i = 0; i < 4; ++i)
 			{
 				// print_move_value(rel[k][i], dead[k][i],sum[k][i]);
-				printf("add %f\n", line_value(rel[k][i], dead[k][i], sum[k][i]));
+				// printf("add %f\n", line_value(rel[k][i], dead[k][i], sum[k][i]));
 				s *= 1 - line_value(rel[k][i], dead[k][i], sum[k][i]);
 			}
 		}
@@ -364,8 +364,6 @@ struct FIR_T : TicTacToe_T<SIZE>
 	vector<string> get_point_relation()
 	{
 		vector<string> vec;
-		char str[10];
-		string s;
 		// 活 0 | 半活 1 | 死 2 |
 		int dead[2][4];
 		int sum[2][4]; // 棋子数量
@@ -375,9 +373,11 @@ struct FIR_T : TicTacToe_T<SIZE>
 			for (int i = 0; i < 4; ++i)
 			{
 				// printf("add %f\n", line_value(rel[k][i], dead[k][i], sum[k][i]));
-				move_repr(rel[k][i], dead[k][i], sum[k][i], str);
-				s = str;
-				vec.push_back(s);
+				string s = move_repr_str(rel[k][i], dead[k][i], sum[k][i]);
+				if (s.size() > 0)
+				{
+					vec.push_back(s);
+				}
 			}
 		}
 		return vec;
@@ -453,9 +453,9 @@ struct FIR_T : TicTacToe_T<SIZE>
 	{
 		char str[11];
 		int i = 0;
+		string s;
 		if (sum == 0) {
-			str[i] = 0;
-			return;
+			return s;
 		}
 		if (rel == 0) {
 			str[i++] = '#';
@@ -465,7 +465,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 		}
 		str[i++] = (sum + '0');
 		str[i] = 0;
-		string s(str);
+		s = str;
 		return s;
 	}
 	void move_repr(int rel, int dead,int sum, char *str)
@@ -513,10 +513,10 @@ struct FIR_T : TicTacToe_T<SIZE>
 			for (int k = 0; k < 2; ++k)
 			{
 				// printf("after: ");
-				print_move_value(rel[k][i], dead[k][i],sum[k][i]);
+				// print_move_value(rel[k][i], dead[k][i],sum[k][i]);
 			}
 		}
-		printf("========\n");
+		// printf("========\n");
 	}
 	double line_value(int rel, int dead, int sum)
 	{
