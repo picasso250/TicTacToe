@@ -434,8 +434,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 		{
 			for (int k = 0; k < 2; ++k)
 			{
-				print_move_value(rel[k][i], dead[k][i],sum[k][i]);
-				// printf("%d,%d,%d\n", rel[k][i], dead[k][i], sum[k][i]);
+				// print_move_value(rel[k][i], dead[k][i],sum[k][i]);
 			}
 			if (rel[0][i] == 1 && rel[0][i] == 1
 				&& dead[0][i] == 0 && dead[1][i] == 0)
@@ -447,15 +446,14 @@ struct FIR_T : TicTacToe_T<SIZE>
 				dead[0][i] += dead[1][i];
 			} else if (rel[0][i] ^ rel[1][i]) {
 				// 当挡住对方棋子，代价是自己这边的也不是活棋了
-				int kk = rel[0][i] == 1 ? 0 : 1;
+				int kk = rel[1][i] == 1 ? 1 : 0;
 				dead[kk][i]++;
 			}
 			for (int k = 0; k < 2; ++k)
 			{
-				// printf("after merge %d,%d,%d\n", rel[k][i], dead[k][i], sum[k][i]);
+				// print_move_value(rel[k][i], dead[k][i],sum[k][i]);
 			}
 		}
-		printf("========\n");
 	}
 	double line_value(int rel, int dead, int sum)
 	{

@@ -214,9 +214,9 @@ void test_get_point_value()
 	g.play(6,6, 'X');
 	g.play(6,7, 'O');
 	// printf("%f <=> %f\n", g.get_point_value(),1-0.7*0.6*0.8*0.6*0.6);
-	// assert(g.get_point_value() == 1-0.7*0.75*0.8*0.75*0.75);
+	assert(g.get_point_value() == 1-0.7*0.75*0.8*0.75*0.75);
 	g.play(7,7, 'X');
-	assert(g.get_point_value() == 1-0.15*0.8*0.75*0.6*0.6);
+	assert(g.get_point_value() == 1-0.7*0.8*0.2*0.75*0.75);
 	// g.play(5,5, 'O');
 	// assert(g.get_point_value() == 0.75);
 	// g.play(8,6, 'X');
