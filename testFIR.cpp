@@ -226,8 +226,8 @@ void test_get_point_value()
 	assert(g.get_point_value() == sum_p({0.3,0.25,0.2,0.25,0.25}));
 	g.play(7,7, 'X');
 	assert(g.get_point_value() == sum_p({0.3,0.2,0.8,0.25,0.25}));
-	// g.play(5,5, 'O');
-	// assert(g.get_point_value() == 0.75);
+	g.play(5,5, 'O');
+	assert(g.get_point_value() == sum_p({0.25,0.2,0.75,0.25,0.25}));
 	// g.play(8,6, 'X');
 	// assert(g.get_point_value() == 0.8);
 
