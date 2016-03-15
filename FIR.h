@@ -399,6 +399,21 @@ struct FIR_T : TicTacToe_T<SIZE>
 				// printf("sum=%d\n", sum[di][i]);
 			}
 		}
+		merge(rel,dead,sum);
+
+		double s = 1;
+		for (int i = 0; i < 2; ++i)
+		{
+			for (int k = 0; k < 4; ++k)
+			{
+				// printf("add %f\n", line_value(rel[i][k], dead[i][k], sum[i][k]));
+				s *= 1 - line_value(rel[i][k], dead[i][k], sum[i][k]);
+			}
+		}
+		return 1.0 - s;
+	}
+	void merge(int rel[][4], int dead[][4],int sum[][4])
+	{
 		// merge, OOO | OX
 		for (int i = 0; i < 4; ++i)
 		{
@@ -422,17 +437,6 @@ struct FIR_T : TicTacToe_T<SIZE>
 				// printf("after merge %d,%d,%d\n", rel[k][i], dead[k][i], sum[k][i]);
 			}
 		}
-		
-		double s = 1;
-		for (int i = 0; i < 2; ++i)
-		{
-			for (int k = 0; k < 4; ++k)
-			{
-				// printf("add %f\n", line_value(rel[i][k], dead[i][k], sum[i][k]));
-				s *= 1 - line_value(rel[i][k], dead[i][k], sum[i][k]);
-			}
-		}
-		return 1.0 - s;
 	}
 	double line_value(int rel, int dead, int sum)
 	{
