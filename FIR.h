@@ -361,7 +361,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 		{
 			int ds = di? 1 : -1;
 			// printf("ds = %d\n", ds);
-			for (int i = 0, stone = this->cb[this->x][this->y]; i < 4; ++i)
+			for (int i = 0; i < 4; ++i)
 			{
 				dead[di][i] = 0;
 				sum[di][i] = 1;
@@ -369,15 +369,16 @@ struct FIR_T : TicTacToe_T<SIZE>
 				int sx = ds * dirs[i][0];
 				int sy = ds * dirs[i][1];
 				// printf("add (%d,%d)\n", sx,sy);
-				for (int k = 1; k < SIZE; ++k)
+				for (int k = 1, stone = this->cb[this->x][this->y]; k < SIZE; ++k)
 				{
 					int x = this->x + k*sx;
 					int y = this->y + k*sy;
 					if (in_board(x, y))
 					{
-						// printf("check %d,%d\n", x,y);
+						// printf("%c check (%d,%d) %c\n", stone, x,y, this->cb[x][y]);
 						if (this->cb[x][y] == stone) {
 							sum[di][i]++;
+							// printf("add stone %d = %d\n", di*4+i, sum[di][i]);
 						} else if (this->cb[x][y] == ' ') {
 							break;
 						} else {
@@ -402,15 +403,29 @@ struct FIR_T : TicTacToe_T<SIZE>
 		merge(rel,dead,sum);
 
 		double s = 1;
-		for (int i = 0; i < 2; ++i)
+		for (int k = 0; k < 2; ++k)
 		{
-			for (int k = 0; k < 4; ++k)
+			for (int i = 0; i < 4; ++i)
 			{
-				// printf("add %f\n", line_value(rel[i][k], dead[i][k], sum[i][k]));
-				s *= 1 - line_value(rel[i][k], dead[i][k], sum[i][k]);
+				// print_move_value(rel[k][i], dead[k][i],sum[k][i]);
+				// printf("add %f\n", line_value(rel[k][i], dead[k][i], sum[k][i]));
+				s *= 1 - line_value(rel[k][i], dead[k][i], sum[k][i]);
 			}
 		}
 		return 1.0 - s;
+	}
+	void print_move_value(int rel, int dead,int sum)
+	{
+		if (sum == 0) {
+			return;
+		}
+		if (rel == 0) {
+			printf("#");
+		}
+		if (dead == 0) {
+			printf("+");
+		}
+		printf("%d\n", sum);
 	}
 	void merge(int rel[][4], int dead[][4],int sum[][4])
 	{
@@ -419,16 +434,19 @@ struct FIR_T : TicTacToe_T<SIZE>
 		{
 			for (int k = 0; k < 2; ++k)
 			{
+				print_move_value(rel[k][i], dead[k][i],sum[k][i]);
 				// printf("%d,%d,%d\n", rel[k][i], dead[k][i], sum[k][i]);
 			}
 			if (rel[0][i] == 1 && rel[0][i] == 1
 				&& dead[0][i] == 0 && dead[1][i] == 0)
 			{
-				// printf("merge %d\n", i);
+				// 当己方棋子连成线
+				// printf("merge %d, %d+%d \n", i, sum[0][i], sum[1][i]);
 				sum[0][i] += sum[1][i] - 1;
 				sum[1][i] = 0;
 				dead[0][i] += dead[1][i];
 			} else if (rel[0][i] ^ rel[1][i]) {
+				// 当挡住对方棋子，代价是自己这边的也不是活棋了
 				int kk = rel[0][i] == 1 ? 0 : 1;
 				dead[kk][i]++;
 			}
@@ -437,6 +455,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 				// printf("after merge %d,%d,%d\n", rel[k][i], dead[k][i], sum[k][i]);
 			}
 		}
+		printf("========\n");
 	}
 	double line_value(int rel, int dead, int sum)
 	{
@@ -447,7 +466,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 				{0.0, 0.25, 0.55, 0.75, 1.0, 1.0}  // 半活
 			},
 			{ // 延展自己的棋子
-				{0.0, 0.4, 0.8,  0.9, 1.0,  1.0}, // 活
+				{0.0, 0.25, 0.8,  0.9, 1.0,  1.0}, // 活
 				{0.0, 0.2, 0.55, 0.7, 0.75, 1.0}  // 半活
 			}
 		};

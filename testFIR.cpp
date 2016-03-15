@@ -202,16 +202,21 @@ void test_merge()
 	g.merge(rel,dead,sum);
 	assert(sum[0][0] == 1);
 	assert(sum[1][0] == 0);
+
+	assert(dead[0][2] == 1);
+	assert(dead[1][2] == 1);
+	assert(sum[0][2] == 1);
+	assert(sum[1][2] == 1);
 }
 void test_get_point_value()
 {
 	FIR g;
 	g.play(6,6, 'X');
 	g.play(6,7, 'O');
-	printf("%f <=> %f\n", g.get_point_value(),1-0.7*0.6*0.8*0.6*0.6);
-	assert(g.get_point_value() == 1-0.7*0.6*0.8*0.6*0.6);
-	// g.play(7,7, 'X');
-	// assert(g.get_point_value() == 1-0.2*0.55);
+	// printf("%f <=> %f\n", g.get_point_value(),1-0.7*0.6*0.8*0.6*0.6);
+	// assert(g.get_point_value() == 1-0.7*0.75*0.8*0.75*0.75);
+	g.play(7,7, 'X');
+	assert(g.get_point_value() == 1-0.15*0.8*0.75*0.6*0.6);
 	// g.play(5,5, 'O');
 	// assert(g.get_point_value() == 0.75);
 	// g.play(8,6, 'X');
