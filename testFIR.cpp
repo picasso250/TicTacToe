@@ -189,8 +189,8 @@ void test_get_point_value()
 	FIR g;
 	g.play(6,6, 'X');
 	g.play(6,7, 'O');
-	printf("%f\n", g.get_point_value());
-	assert(g.get_point_value() == 0.4);
+	printf("%f <=> %f\n", g.get_point_value(),1-0.7*0.6*0.8*0.6*0.6);
+	assert(g.get_point_value() == 1-0.7*0.6*0.8*0.6*0.6);
 	// g.play(7,7, 'X');
 	// assert(g.get_point_value() == 1-0.2*0.55);
 	// g.play(5,5, 'O');

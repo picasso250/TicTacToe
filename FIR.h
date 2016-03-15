@@ -360,7 +360,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 		for (int di = 0; di < 2; ++di)
 		{
 			int ds = di? 1 : -1;
-			printf("ds = %d\n", ds);
+			// printf("ds = %d\n", ds);
 			for (int i = 0, stone = this->cb[this->x][this->y]; i < 4; ++i)
 			{
 				dead[di][i] = 0;
@@ -368,13 +368,14 @@ struct FIR_T : TicTacToe_T<SIZE>
 				rel[di][i] = 1;
 				int sx = ds * dirs[i][0];
 				int sy = ds * dirs[i][1];
+				// printf("add (%d,%d)\n", sx,sy);
 				for (int k = 1; k < SIZE; ++k)
 				{
 					int x = this->x + k*sx;
 					int y = this->y + k*sy;
 					if (in_board(x, y))
 					{
-						printf("check %d,%d\n", x,y);
+						// printf("check %d,%d\n", x,y);
 						if (this->cb[x][y] == stone) {
 							sum[di][i]++;
 						} else if (this->cb[x][y] == ' ') {
@@ -382,6 +383,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 						} else {
 							if (k == 1) {
 								stone = this->cb[x][y];
+								printf("stone chane to %c\n", stone);
 								rel[di][i] = 0;
 								sum[di][i] = 1;
 							} else {
@@ -394,15 +396,22 @@ struct FIR_T : TicTacToe_T<SIZE>
 						break;
 					}
 				}
-				printf("sum=%d\n", sum[di][i]);
+				// printf("sum=%d\n", sum[di][i]);
 			}
 		}
 		for (int i = 0; i < 4; ++i)
 		{
-			if (rel[0][i] == 1 && rel[0][i] == 1)
+			for (int k = 0; k < 2; ++k)
 			{
-				sum[0][i] = sum[0][i] + sum[1][i] - 1;
+				printf("%d,%d,%d\n", rel[k][i], dead[k][i], sum[k][i]);
+			}
+			if (rel[0][i] == 1 && rel[0][i] == 1
+				&& dead[0][i] == 0 && dead[1][i] == 0)
+			{
+				// printf("merge %d\n", i);
+				sum[0][i] += sum[1][i] - 1;
 				sum[1][i] = 0;
+				dead[0][i] += dead[1][i];
 			}
 		}
 		
@@ -411,7 +420,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 		{
 			for (int k = 0; k < 4; ++k)
 			{
-				printf("add %f\n", line_value(rel[i][k], dead[i][k], sum[i][k]));
+				// printf("add %f\n", line_value(rel[i][k], dead[i][k], sum[i][k]));
 				s *= 1 - line_value(rel[i][k], dead[i][k], sum[i][k]);
 			}
 		}
