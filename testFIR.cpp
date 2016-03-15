@@ -184,7 +184,7 @@ void test_line_value()
 	assert(g.line_value(1, 0, 3) == 0.9);
 	assert(g.line_value(0, 1, 1) == 0.25);
 }
-void test_merge()
+void test_merge_env()
 {
 	FIR g;
 	int rel[2][4] = {
@@ -199,7 +199,7 @@ void test_merge()
 		{1,1,1,1},
 		{1,1,1,1}
 	};
-	g.merge(rel,dead,sum);
+	g.merge_env(rel,dead,sum);
 	assert(sum[0][0] == 1);
 	assert(sum[1][0] == 0);
 
@@ -255,7 +255,7 @@ int main(int argc, char const *argv[])
 	testWhoWins();
 	test_winby();
 	test_line_value();
-	test_merge();
+	test_merge_env();
 	test_get_point_value();
 	// testAI_MoveX();
 	cout<<"8 cases PASSED."<<endl;

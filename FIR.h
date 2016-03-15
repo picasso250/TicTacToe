@@ -1,5 +1,6 @@
 #include <tuple>
 #include <map>
+#include <string>
 #include <algorithm>
 #include <functional>
 #include <iostream>
@@ -343,7 +344,47 @@ struct FIR_T : TicTacToe_T<SIZE>
 	// 对当前的颜色的棋子的价值
 	double get_point_value()
 	{
-		vector<double> vec;
+		// 活 0 | 半活 1 | 死 2 |
+		int dead[2][4];
+		int sum[2][4]; // 棋子数量
+		int rel[2][4]; // 关系：1增加己方的，0挡住对方的
+		get_point_value_table(rel, dead, sum);
+		double s = 1;
+		for (int k = 0; k < 2; ++k)
+		{
+			for (int i = 0; i < 4; ++i)
+			{
+				// print_move_value(rel[k][i], dead[k][i],sum[k][i]);
+				printf("add %f\n", line_value(rel[k][i], dead[k][i], sum[k][i]));
+				s *= 1 - line_value(rel[k][i], dead[k][i], sum[k][i]);
+			}
+		}
+		return 1.0 - s;
+	}
+	vector<string> get_point_relation()
+	{
+		vector<string> vec;
+		char str[10];
+		string s;
+		// 活 0 | 半活 1 | 死 2 |
+		int dead[2][4];
+		int sum[2][4]; // 棋子数量
+		int rel[2][4]; // 关系：1增加己方的，0挡住对方的
+		get_point_value_table(rel, dead,sum);
+		for (int k = 0; k < 2; ++k) {
+			for (int i = 0; i < 4; ++i)
+			{
+				// printf("add %f\n", line_value(rel[k][i], dead[k][i], sum[k][i]));
+				move_repr(rel[k][i], dead[k][i], sum[k][i], str);
+				s = str;
+				vec.push_back(s);
+			}
+		}
+		return vec;
+	}
+
+	void get_point_value_table(int rel[2][4], int dead[2][4], int sum[2][4])
+	{
 		// 八个方向的其中四个，另外四个可以取相反数获得
 		int dirs[4][2] = {
 			{1,0},
@@ -351,10 +392,6 @@ struct FIR_T : TicTacToe_T<SIZE>
 			{0,1},
 			{-1,1}
 		};
-		// 活 0 | 半活 1 | 死 2 |
-		int dead[2][4];
-		int sum[2][4]; // 棋子数量
-		int rel[2][4]; // 关系：1增加己方的，0挡住对方的
 		char stone;
 		int dir_map[2] = {-1, 1};
 		for (int di = 0; di < 2; ++di)
@@ -400,19 +437,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 				// printf("sum=%d\n", sum[di][i]);
 			}
 		}
-		merge(rel,dead,sum);
-
-		double s = 1;
-		for (int k = 0; k < 2; ++k)
-		{
-			for (int i = 0; i < 4; ++i)
-			{
-				// print_move_value(rel[k][i], dead[k][i],sum[k][i]);
-				// printf("add %f\n", line_value(rel[k][i], dead[k][i], sum[k][i]));
-				s *= 1 - line_value(rel[k][i], dead[k][i], sum[k][i]);
-			}
-		}
-		return 1.0 - s;
+		merge_env(rel,dead,sum);
 	}
 	void print_move_value(int rel, int dead,int sum)
 	{
@@ -420,17 +445,49 @@ struct FIR_T : TicTacToe_T<SIZE>
 			printf("0\n");
 			return;
 		}
+		char str[10];
+		move_repr(rel, dead,sum, str);
+		printf("%s\n", str);
+	}
+	string move_repr_str(int rel, int dead,int sum)
+	{
+		char str[11];
+		int i = 0;
+		if (sum == 0) {
+			str[i] = 0;
+			return;
+		}
 		if (rel == 0) {
-			printf("#");
+			str[i++] = '#';
 		}
 		if (dead == 0) {
-			printf("+");
+			str[i++] = '+';
 		}
-		printf("%d\n", sum);
+		str[i++] = (sum + '0');
+		str[i] = 0;
+		string s(str);
+		return s;
 	}
-	void merge(int rel[][4], int dead[][4],int sum[][4])
+	void move_repr(int rel, int dead,int sum, char *str)
 	{
-		// merge, OOO | OX
+		int i = 0;
+		if (sum == 0) {
+			str[i] = 0;
+			return;
+		}
+		if (rel == 0) {
+			str[i++] = '#';
+		}
+		if (dead == 0) {
+			str[i++] = '+';
+		}
+		str[i++] = (sum + '0');
+		str[i] = 0;
+		return;
+	}
+	void merge_env(int rel[][4], int dead[][4],int sum[][4])
+	{
+		// merge_env, OOO | OX
 		for (int i = 0; i < 4; ++i)
 		{
 			for (int k = 0; k < 2; ++k)
@@ -443,7 +500,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 				&& dead[0][i] == 0 && dead[1][i] == 0)
 			{
 				// 当己方棋子连成线
-				// printf("merge %d, %d+%d \n", i, sum[0][i], sum[1][i]);
+				// printf("merge_env %d, %d+%d \n", i, sum[0][i], sum[1][i]);
 				sum[0][i] += sum[1][i] - 1;
 				sum[1][i] = 0;
 				dead[0][i] += dead[1][i];
@@ -456,10 +513,10 @@ struct FIR_T : TicTacToe_T<SIZE>
 			for (int k = 0; k < 2; ++k)
 			{
 				// printf("after: ");
-				// print_move_value(rel[k][i], dead[k][i],sum[k][i]);
+				print_move_value(rel[k][i], dead[k][i],sum[k][i]);
 			}
 		}
-		// printf("========\n");
+		printf("========\n");
 	}
 	double line_value(int rel, int dead, int sum)
 	{
