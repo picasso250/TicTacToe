@@ -229,18 +229,25 @@ void test_get_point_value()
 	g.play(5,5, 'O');
 	assert(g.get_point_value() == sum_p({0.25,0.2,0.75,0.25,0.25}));
 }
+bool vector_equal(vector<string> a, vector<string> b)
+{
+	sort(a.begin(), a.end());
+	sort(b.begin(), b.end());
+	return (b == a);
+}
 void test_get_point_relation()
 {
 	FIR g;
 	vector<string> vec;
 	g.play(6,6, 'X');
 	g.play(6,7, 'O');
-	vec = {"#+1","1","+1","+1","+1"};
-	sort(vec.begin(), vec.end());
-	auto res  = g.get_point_relation();
-	sort(res.begin(), res.end());
-	assert(res == vec);
-	
+	// vec = {"#+1","1","+1","+1","+1"};
+	// sort(vec.begin(), vec.end());
+	// auto res  = ;
+	// sort(res.begin(), res.end());
+	assert(vector_equal(g.get_point_relation(),
+		{"#+1","1","+1","+1","+1"}));
+
 	g.play(7,7, 'X');
 	// assert(g.get_point_value() == sum_p({0.3,0.2,0.8,0.25,0.25}));
 	g.play(5,5, 'O');
