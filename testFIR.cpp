@@ -208,15 +208,24 @@ void test_merge()
 	assert(sum[0][2] == 1);
 	assert(sum[1][2] == 1);
 }
+double sum_p(vector<double> v)
+{
+	double s = 1.0;
+	for (auto i = v.begin(); i != v.end(); ++i)
+	{
+		s *= 1.0 - *i;
+	}
+	return 1.0 - s;
+}
 void test_get_point_value()
 {
 	FIR g;
 	g.play(6,6, 'X');
 	g.play(6,7, 'O');
 	// printf("%f <=> %f\n", g.get_point_value(),1-0.7*0.6*0.8*0.6*0.6);
-	assert(g.get_point_value() == 1-0.7*0.75*0.8*0.75*0.75);
+	assert(g.get_point_value() == sum_p({0.3,0.25,0.2,0.25,0.25}));
 	g.play(7,7, 'X');
-	assert(g.get_point_value() == 1-0.7*0.8*0.2*0.75*0.75);
+	assert(g.get_point_value() == sum_p({0.3,0.2,0.8,0.25,0.25}));
 	// g.play(5,5, 'O');
 	// assert(g.get_point_value() == 0.75);
 	// g.play(8,6, 'X');
