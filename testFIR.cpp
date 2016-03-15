@@ -16,7 +16,6 @@ void testRow()
 	assert(g.whoWins() == '-');
 	g.play(0,4, 'X');
 	g.play(1,1, 'O');
-	// g.print();
 	assert(g.whoWins() == 'X');
 
 	g.play(0,0,'O');
@@ -36,7 +35,6 @@ void testCol()
 	g.play(3,3,'O');
 	g.play(4,3,'O');
 	g.play(5,3,'O');
-	// g.print();
 	assert(g.whoWins() == 'O');
 	// cout<<"========="<<endl;
 }
@@ -83,7 +81,6 @@ void testX()
 	g.play(6,9,'X');
 	g.play(5,10,'X');
 	g.play(4,11,'X');
-	g.print();
 	assert(g.whoWins() == 'X');
 }
 void testWhoWins()
@@ -100,7 +97,6 @@ void testWhoWins()
 	g.play(6,6,'X');
 	g.play(6,7,'O');
 	g.play(0,12,'X');
-	g.print();
 	assert(g.whoWins() == '-');
 }
 void testFinish()
@@ -121,6 +117,10 @@ void test_in_board()
 	assert(g.in_board(1) == true);
 	assert(g.in_board(2) == true);
 	assert(g.in_board(3) == true);
+
+	assert(g.in_board(12, 1));
+	assert(!g.in_board(-1, 13));
+	assert(!g.in_board(1, 13));
 }
 void test_in_battle_field()
 {
@@ -131,7 +131,6 @@ void test_in_battle_field()
 	g.play(3,3,'O');
 	g.play(4,4,'O');
 	g.play(5,5,'O');
-	// g.print();
 	assert(g.in_battle_field(10,10) == false);
 	assert(g.in_battle_field(1,2) == true);
 	assert(g.in_battle_field(1,3) == true);
@@ -177,6 +176,29 @@ void test_winby()
 	g.print();
 	assert(g.win_by() == 'X');
 }
+void test_line_value()
+{
+	FIR g;
+	assert(g.line_value(0, 2, 5) == 1.0);
+	assert(g.line_value(0, 2, 4) == 0.1);
+	assert(g.line_value(1, 0, 3) == 0.9);
+	assert(g.line_value(0, 1, 1) == 0.25);
+}
+void test_get_point_value()
+{
+	FIR g;
+	g.play(6,6, 'X');
+	g.play(6,7, 'O');
+	printf("%f\n", g.get_point_value());
+	assert(g.get_point_value() == 0.4);
+	// g.play(7,7, 'X');
+	// assert(g.get_point_value() == 1-0.2*0.55);
+	// g.play(5,5, 'O');
+	// assert(g.get_point_value() == 0.75);
+	// g.play(8,6, 'X');
+	// assert(g.get_point_value() == 0.8);
+
+}
 void testAI_MoveX()
 {
 	FIR g;
@@ -199,7 +221,9 @@ int main(int argc, char const *argv[])
 	test_in_battle_field();
 	testWhoWins();
 	test_winby();
-	testAI_MoveX();
+	test_line_value();
+	test_get_point_value();
+	// testAI_MoveX();
 	cout<<"8 cases PASSED."<<endl;
 	return 0;
 }

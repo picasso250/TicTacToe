@@ -305,6 +305,10 @@ struct FIR_T : TicTacToe_T<SIZE>
 	{
 		return 0 <= i && i < SIZE;
 	}
+	bool in_board(int x, int y)
+	{
+		return in_board(x) && in_board(y);
+	}
 	bool AI_MoveX()
 	{
 		if (this->x == -1)
@@ -335,5 +339,111 @@ struct FIR_T : TicTacToe_T<SIZE>
 		this->play(i,j,'X');
 		return true;
 	}
+	// 当前棋子落点的价值（棋子已经落在这个点上）
+	// 对当前的颜色的棋子的价值
+	double get_point_value()
+	{
+		vector<double> vec;
+		// 八个方向的其中四个，另外四个可以取相反数获得
+		int dirs[4][2] = {
+			{1,0},
+			{1,1},
+			{0,1},
+			{-1,1}
+		};
+		// 活 0 | 半活 1 | 死 2 |
+		int dead[2][4];
+		int sum[2][4]; // 棋子数量
+		int rel[2][4]; // 关系：1增加己方的，0挡住对方的
+		char stone;
+		int dir_map[2] = {-1, 1};
+		for (int di = 0; di < 2; ++di)
+		{
+			int ds = di? 1 : -1;
+			printf("ds = %d\n", ds);
+			for (int i = 0, stone = this->cb[this->x][this->y]; i < 4; ++i)
+			{
+				dead[di][i] = 0;
+				sum[di][i] = 1;
+				rel[di][i] = 1;
+				int sx = ds * dirs[i][0];
+				int sy = ds * dirs[i][1];
+				for (int k = 1; k < SIZE; ++k)
+				{
+					int x = this->x + k*sx;
+					int y = this->y + k*sy;
+					if (in_board(x, y))
+					{
+						printf("check %d,%d\n", x,y);
+						if (this->cb[x][y] == stone) {
+							sum[di][i]++;
+						} else if (this->cb[x][y] == ' ') {
+							break;
+						} else {
+							if (k == 1) {
+								stone = this->cb[x][y];
+								rel[di][i] = 0;
+								sum[di][i] = 1;
+							} else {
+								dead[di][i]++;
+								break;
+							}
+						}
+					} else {
+						dead[di][i]++;
+						break;
+					}
+				}
+				printf("sum=%d\n", sum[di][i]);
+			}
+		}
+		for (int i = 0; i < 4; ++i)
+		{
+			if (rel[0][i] == 1 && rel[0][i] == 1)
+			{
+				sum[0][i] = sum[0][i] + sum[1][i] - 1;
+				sum[1][i] = 0;
+			}
+		}
+		
+		double s = 1;
+		for (int i = 0; i < 2; ++i)
+		{
+			for (int k = 0; k < 4; ++k)
+			{
+				printf("add %f\n", line_value(rel[i][k], dead[i][k], sum[i][k]));
+				s *= 1 - line_value(rel[i][k], dead[i][k], sum[i][k]);
+			}
+		}
+		return 1.0 - s;
+	}
+	double line_value(int rel, int dead, int sum)
+	{
+		// printf("rel=%d, dead=%d, sum=%d\n", rel, dead, sum);
+		double vm[2][2][5+1] = {
+			{ // 挡
+				{0.0, 0.3,  0.75, 0.85, 1.0, 1.0}, // 活
+				{0.0, 0.25, 0.55, 0.75, 1.0, 1.0}  // 半活
+			},
+			{ // 延展自己的棋子
+				{0.0, 0.4, 0.8,  0.9, 1.0,  1.0}, // 活
+				{0.0, 0.2, 0.55, 0.7, 0.75, 1.0}  // 半活
+			}
+		};
+		if (sum == 0)
+		{
+			return 0.0;
+		}
+		if (sum >= 5)
+		{
+			return 1.0;
+		}
+		if (dead == 2)
+		{
+			return 0.1;
+		}
+		return vm[rel][dead][sum];
+	}
 };
+
 typedef FIR_T<13> FIR;
