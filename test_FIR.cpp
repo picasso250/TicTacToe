@@ -1,6 +1,4 @@
 #include <iostream>
-#include <cassert>
-
 
 using namespace std;
 
@@ -258,6 +256,9 @@ void test_get_point_relation()
 	assert(vector_equal(g.get_point_relation(), {"+1","1","#+2","+1","+1"}));
 	g.play(8,6, 'X');
 	assert(vector_equal(g.get_point_relation(), {"+1","+2","+1","+1"}));
+	g.play(7,6, 'O');
+	assert(vector_equal(g.get_point_relation(), {"#+1","#+1","+2","+1","1","#+1"}));
+	g.play(6,8, 'O');
 }
 void testAI_MoveX() //
 {
