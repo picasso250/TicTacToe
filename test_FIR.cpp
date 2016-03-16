@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cassert>
 
-#include "FIR.h"
 
 using namespace std;
 
@@ -260,7 +259,7 @@ void test_get_point_relation()
 	g.play(8,6, 'X');
 	assert(vector_equal(g.get_point_relation(), {"+1","+2","+1","+1"}));
 }
-void testAI_MoveX()
+void testAI_MoveX() //
 {
 	FIR g;
 	// \ mid
@@ -271,22 +270,4 @@ void testAI_MoveX()
 	g.AI_MoveX();
 	g.print();
 	assert(g.isCurPlayer('X') == true);
-}
-int main(int argc, char const *argv[])
-{
-	testRow();
-	testCol();
-	testX();
-	testFinish();
-	test_in_board();
-	test_in_battle_field();
-	testWhoWins();
-	test_winby();
-	test_line_value();
-	test_merge_env();
-	test_get_point_value();
-	test_get_point_relation();
-	// testAI_MoveX();
-	cout<<"8 cases PASSED."<<endl;
-	return 0;
 }

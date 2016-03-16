@@ -1,0 +1,35 @@
+#!bash
+
+if [[ x$1 == "x" ]]; then
+	echo "$0 <file>"
+	exit
+fi
+
+dep=.test_tmp_dep.h
+
+if [[ ! -f $1.h ]]; then
+	echo no $1.h
+	exit
+fi
+echo "#include \"$1.h\"" > $dep
+
+tf=test_$1.cpp
+if [[ ! -f $tf ]]; then
+	echo no $tf
+	exit
+fi
+echo "#include \"$tf\"" >> $dep
+
+cf=.test_tmp_testing.cpp
+
+pt="void test[_A-Z].*\)$"
+grep -P "$pt" $tf | cut -d" " -f 2 | sed 'a ;' > $cf
+
+tc=$(grep -P "$pt" $tf -c)
+ac=$(grep -P "^\s*assert\(" $tf -c)
+echo "cout<<\"$tc cases ($ac assertions) PASSED.\"<<endl;" >> $cf
+
+g++ -std=c++11 -o test test_frame.cpp
+if [[ $? -eq 0 ]]; then
+	./test.exe
+fi
