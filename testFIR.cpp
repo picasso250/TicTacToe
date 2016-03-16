@@ -223,16 +223,26 @@ void test_get_point_value()
 	g.play(6,6, 'X');
 	g.play(6,7, 'O');
 	// printf("%f <=> %f\n", g.get_point_value(),1-0.7*0.6*0.8*0.6*0.6);
-	assert(g.get_point_value() == sum_p({0.3,0.25,0.2,0.25,0.25}));
-	g.play(7,7, 'X');
-	assert(g.get_point_value() == sum_p({0.3,0.2,0.8,0.25,0.25}));
-	g.play(5,5, 'O');
-	assert(g.get_point_value() == sum_p({0.25,0.2,0.75,0.25,0.25}));
+	// assert(g.get_point_value() == sum_p({0.3,0.25,0.2,0.25,0.25}));
+	// g.play(7,7, 'X');
+	// assert(g.get_point_value() == sum_p({0.3,0.2,0.8,0.25,0.25}));
+	// g.play(5,5, 'O');
+	// assert(g.get_point_value() == sum_p({0.25,0.2,0.75,0.25,0.25}));
 }
 bool vector_equal(vector<string> a, vector<string> b)
 {
 	sort(a.begin(), a.end());
 	sort(b.begin(), b.end());
+	// for (auto i = a.begin(); i != a.end(); ++i)
+	// {
+	// 	cout<<*i<<" ";
+	// }
+	// cout<<endl;
+	// for (auto i = b.begin(); i != b.end(); ++i)
+	// {
+	// 	cout<<*i<<" ";
+	// }
+	// cout<<endl;
 	return (b == a);
 }
 void test_get_point_relation()
@@ -241,19 +251,14 @@ void test_get_point_relation()
 	vector<string> vec;
 	g.play(6,6, 'X');
 	g.play(6,7, 'O');
-	// vec = {"#+1","1","+1","+1","+1"};
-	// sort(vec.begin(), vec.end());
-	// auto res  = ;
-	// sort(res.begin(), res.end());
-	assert(vector_equal(g.get_point_relation(),
-		{"#+1","1","+1","+1","+1"}));
+	assert(vector_equal(g.get_point_relation(), {"#+1","1","+1","+1","+1"}));
 
 	g.play(7,7, 'X');
-	// assert(g.get_point_value() == sum_p({0.3,0.2,0.8,0.25,0.25}));
+	assert(vector_equal(g.get_point_relation(), {"#+1","1","+2","+1","+1"}));
 	g.play(5,5, 'O');
-	// assert(g.get_point_value() == sum_p({0.25,0.2,0.75,0.25,0.25}));
-	// g.play(8,6, 'X');
-	// assert(g.get_point_value() == 0.8);
+	assert(vector_equal(g.get_point_relation(), {"+1","1","#+2","+1","+1"}));
+	g.play(8,6, 'X');
+	assert(vector_equal(g.get_point_relation(), {"+1","+2","+1","+1"}));
 }
 void testAI_MoveX()
 {
