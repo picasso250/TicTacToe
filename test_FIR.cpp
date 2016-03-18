@@ -230,16 +230,14 @@ bool vector_equal(vector<string> a, vector<string> b)
 {
 	sort(a.begin(), a.end());
 	sort(b.begin(), b.end());
-	// for (auto i = a.begin(); i != a.end(); ++i)
-	// {
-	// 	cout<<*i<<" ";
-	// }
-	// cout<<endl;
-	// for (auto i = b.begin(); i != b.end(); ++i)
-	// {
-	// 	cout<<*i<<" ";
-	// }
-	// cout<<endl;
+	for (auto i = a.begin(); i != a.end(); ++i) {
+		cout<<*i<<" ";
+	}
+	cout<<endl;
+	for (auto i = b.begin(); i != b.end(); ++i) {
+		cout<<*i<<" ";
+	}
+	cout<<endl;
 	return (b == a);
 }
 void test_get_point_relation()
@@ -249,7 +247,6 @@ void test_get_point_relation()
 	g.play(6,6, 'X');
 	g.play(6,7, 'O');
 	assert(vector_equal(g.get_point_relation(), {"#+1","1","+1","+1","+1"}));
-
 	g.play(7,7, 'X');
 	assert(vector_equal(g.get_point_relation(), {"#+1","1","+2","+1","+1"}));
 	g.play(5,5, 'O');
@@ -259,6 +256,7 @@ void test_get_point_relation()
 	g.play(7,6, 'O');
 	assert(vector_equal(g.get_point_relation(), {"#+1","#+1","+2","+1","1","#+1"}));
 	g.play(6,8, 'O');
+	assert(vector_equal(g.get_point_relation(), {"+1","+1","2","1","#+2"}));
 }
 void testAI_MoveX() //
 {

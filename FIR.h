@@ -372,8 +372,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 		for (int k = 0; k < 2; ++k) {
 			for (int i = 0; i < 4; ++i)
 			{
-				// printf("add %f\n", line_value(rel[k][i], dead[k][i], sum[k][i]));
-				string s = move_repr_str(rel[k][i], dead[k][i], sum[k][i]);
+				string s = get_move_repr_str(rel[k][i], dead[k][i], sum[k][i]);
 				if (s.size() > 0)
 				{
 					vec.push_back(s);
@@ -385,6 +384,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 
 	void get_point_value_table(int rel[2][4], int dead[2][4], int sum[2][4])
 	{
+		printf("==========\n");
 		// 八个方向的其中四个，另外四个可以取相反数获得
 		int dirs[4][2] = {
 			{1,0},
@@ -412,10 +412,10 @@ struct FIR_T : TicTacToe_T<SIZE>
 					int y = this->y + k*sy;
 					if (in_board(x, y))
 					{
-						// printf("%c check (%d,%d) %c\n", stone, x,y, this->cb[x][y]);
+						printf("%c check (%d,%d) %c\n", stone, x,y, this->cb[x][y]);
 						if (this->cb[x][y] == stone) {
 							sum[di][i]++;
-							// printf("add stone %d = %d\n", di*4+i, sum[di][i]);
+							printf("add stone .%d => %d\n", di*4+i, sum[di][i]);
 						} else if (this->cb[x][y] == ' ') {
 							break;
 						} else {
@@ -449,7 +449,7 @@ struct FIR_T : TicTacToe_T<SIZE>
 		move_repr(rel, dead,sum, str);
 		printf("%s\n", str);
 	}
-	string move_repr_str(int rel, int dead,int sum)
+	string get_move_repr_str(int rel, int dead,int sum)
 	{
 		char str[11];
 		int i = 0;
@@ -492,12 +492,11 @@ struct FIR_T : TicTacToe_T<SIZE>
 		{
 			for (int k = 0; k < 2; ++k)
 			{
-				// printf("before: ");
-				// print_move_value(rel[k][i], dead[k][i],sum[k][i]);
+				printf("before: ");
+				print_move_value(rel[k][i], dead[k][i],sum[k][i]);
 			}
 			// printf("%d ^ %d = %d\n", rel[0][i] ,rel[1][i],rel[0][i] ^ rel[1][i]);
-			if (rel[0][i] == 1 && rel[1][i] == 1
-				&& dead[0][i] == 0 && dead[1][i] == 0)
+			if (rel[0][i] == 1 && rel[1][i] == 1)
 			{
 				// 当己方棋子连成线
 				// printf("merge_env %d, %d+%d \n", i, sum[0][i], sum[1][i]);
@@ -512,8 +511,8 @@ struct FIR_T : TicTacToe_T<SIZE>
 			}
 			for (int k = 0; k < 2; ++k)
 			{
-				// printf("after: ");
-				// print_move_value(rel[k][i], dead[k][i],sum[k][i]);
+				printf("after: ");
+				print_move_value(rel[k][i], dead[k][i],sum[k][i]);
 			}
 		}
 		// printf("========\n");
